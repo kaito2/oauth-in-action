@@ -21,7 +21,7 @@ var resource = {
 	"description": "This data has been protected by OAuth 2.0"
 };
 
-var getAccessToken = function(req, res, next) {
+var getAccessToken = function (req, res, next) {
 	// check the auth header first
 	var auth = req.headers['authorization'];
 	var inToken = null;
@@ -33,13 +33,13 @@ var getAccessToken = function(req, res, next) {
 	} else if (req.query && req.query.access_token) {
 		inToken = req.query.access_token
 	}
-	
+
 	console.log('Incoming token: %s', inToken);
-	nosql.one(function(token) {
+	nosql.one(function (token) {
 		if (token.access_token == inToken) {
-			return token;	
+			return token;
 		}
-	}, function(err, token) {
+	}, function (err, token) {
 		if (token) {
 			console.log("We found a matching token: %s", inToken);
 		} else {
@@ -52,20 +52,20 @@ var getAccessToken = function(req, res, next) {
 };
 
 app.options('/resource', cors());
-app.post("/resource", cors(), getAccessToken, function(req, res){
+app.post("/resource", cors(), getAccessToken, function (req, res) {
 
 	if (req.access_token) {
 		res.json(resource);
 	} else {
 		res.status(401).end();
 	}
-	
+
 });
 
-var server = app.listen(9002, 'localhost', function () {
-  var host = server.address().address;
-  var port = server.address().port;
+var server = app.listen(9002, '0.0.0.0', function () {
+	var host = server.address().address;
+	var port = server.address().port;
 
-  console.log('OAuth Resource Server is listening at http://%s:%s', host, port);
+	console.log('OAuth Resource Server is listening at http://%s:%s', host, port);
 });
- 
+

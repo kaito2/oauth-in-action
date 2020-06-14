@@ -1,0 +1,20 @@
+version: "3.8"
+services:
+  client:
+    build: .
+    ports:
+      - "9000:9000"
+    # network_mode: "host"
+    command: ["node", "client.js"]
+  authz-server:
+    build: .
+    ports:
+      - "9001:9001"
+    # network_mode: "host"
+    command: ["node", "authorizationServer.js"]
+  protected-resource:
+    build: .
+    ports:
+      - "9002:9002"
+    # network_mode: "host"
+    command: ["node", "protectedResource.js"]
