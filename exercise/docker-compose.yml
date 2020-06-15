@@ -12,9 +12,13 @@ services:
       - "9001:9001"
     # network_mode: "host"
     command: ["node", "authorizationServer.js"]
+    volumes:
+      - ${PWD}/db:/usr/src/app/db
   protected-resource:
     build: .
     ports:
       - "9002:9002"
     # network_mode: "host"
     command: ["node", "protectedResource.js"]
+    volumes:
+      - ${PWD}/db:/usr/src/app/db

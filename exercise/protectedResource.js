@@ -1,7 +1,7 @@
 var express = require("express");
 var bodyParser = require('body-parser');
 var cons = require('consolidate');
-var nosql = require('nosql').load('database.nosql');
+var nosql = require('nosql').load('db/database.nosql');
 var cors = require('cors');
 
 var app = express();
@@ -35,20 +35,23 @@ var getAccessToken = function (req, res, next) {
 	}
 
 	console.log('Incoming token: %s', inToken);
-	nosql.one(function (token) {
-		if (token.access_token == inToken) {
-			return token;
+	nosql.one(
+		function (token) {
+			if (token.access_token == inToken) {
+				return token;
+			}
+		},
+		function (err, token) {
+			if (token) {
+				console.log("We found a matching token: %s", inToken);
+			} else {
+				console.log('No matching token was found.');
+			}
+			req.access_token = token;
+			next();
+			return;
 		}
-	}, function (err, token) {
-		if (token) {
-			console.log("We found a matching token: %s", inToken);
-		} else {
-			console.log('No matching token was found.');
-		}
-		req.access_token = token;
-		next();
-		return;
-	});
+	);
 };
 
 app.options('/resource', cors());
